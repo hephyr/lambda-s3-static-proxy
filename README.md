@@ -1,5 +1,7 @@
 # AWS Serverless Static Site Gateway
 
+![architecture](./architecture.png)
+
 This project provides a serverless architecture for hosting static websites in S3 using AWS Lambda and API Gateway, without the need for enabling S3 Public Access or using Amazon CloudFront. The setup serves static content stored in an S3 bucket through a Lambda function, which acts as a reverse proxy.
 
 ## Prerequisites
@@ -19,19 +21,19 @@ Before starting the setup, ensure you have the following:
 
     - Choose the runtime as **Amazon Linux 2 arm64**.
 
-    - Set the handler to bootstrap. This configuration is necessary because you are using a custom runtime environment.
+    - Set the handler to `bootstrap`. This configuration is necessary because you are using a custom runtime environment.
 
 2. **Compile the Code**:
-    - Use the make package command in your local Go environment to compile the Lambda function code. This command should create a function.zip file in the build directory.
+    - Use `make package` command in your local Go environment to compile the Lambda function code. This command should create a `function.zip` file in the build directory.
 
 3. **Upload the Compiled Function**:
-    - Upload the function.zip file from the build directory to your Lambda function.
+    - Upload the `build/function.zip` file to your Lambda function.
 
 4. **Configure Environment Variables**:
-    - Set necessary environment variables such BUCKET_NAME to specify the S3 bucket and AWS region your Lambda will interact with.
+    - Set environment variables `BUCKET_NAME` to specify the S3 bucket your Lambda.
 
 5. **Set IAM Role Permissions**:
-    - Ensure the IAM role associated with your Lambda function has the necessary permissions to access S3. This typically includes actions like s3:GetObject within the policy attached to the role.
+    - Ensure the IAM role associated with your Lambda function has the necessary permissions to access S3. This typically includes actions like `s3:GetObject` within the policy attached to the role.
 
 ### Step 2: S3 Bucket Configuration
 
@@ -46,12 +48,12 @@ Before starting the setup, ensure you have the following:
 
 2. **Configure GET Method for Root**:
 
-    - Create a new resource corresponding to the root path /.
+    - Create a new resource corresponding to the root path `/`.
 
     - Attach a GET method to this resource that triggers your Lambda function. This setup handles requests directed at your root URL.
 
-3. **Setup {proxy+} with ANY Method**:
-    - Add a {proxy+} resource under the root to handle all other paths and HTTP methods. Set this to trigger the same Lambda function.
+3. **Setup `{proxy+}` with ANY Method**:
+    - Add a `{proxy+}` resource under the root to handle all other paths and HTTP methods. Set this to trigger the same Lambda function.
 
 4. **Enable Binary Support**:
     - Go to the API settings and add */* to the binary media types list to handle all content types as binary data.
